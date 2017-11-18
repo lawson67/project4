@@ -24,12 +24,12 @@ final class ChatServer {
 
     private void broadcast(String message){
         //TO DO: MAKE CONCURRENT! METHOD IS SHARED ACROSS ALL CLIENTS
-
+                //Changes - synchronized the .writeMEssage() which this method uses. Perhaps makes it partially concurrent?
 
         //The method will then print the message to the terminal of every client.
         //This will be done by iterating through the client list and writing the message using the
         //      writeMessage(String msg) method.
-        //You will also need to print the message to the server’s terminal with a simple print statement.
+        //You will also need to print the message to the serverâ€™s terminal with a simple print statement.
         String pattern = "HH:mm:ss";
         SimpleDateFormat timeFormat = new SimpleDateFormat(pattern);
         String currTime = timeFormat.format(new Date());
@@ -166,7 +166,7 @@ final class ChatServer {
          * This is what the client thread actually runs.
          */
         @Override
-        public void run() {
+        public synchronized void run() {
             // Read the username sent to you by client
             while(socketConnected){ //implemented to keep checking for user input.
                 String pattern = "HH:mm:ss";
@@ -207,9 +207,9 @@ final class ChatServer {
             //System.out.println("closed");
         }
 
-        private boolean writeMessage(String msg){
+        private synchronized boolean writeMessage(String msg){
             //writeMessage will return false if the socket is not connected and true otherwise.
-            //Before returning true, make sure you actually write the message to the ClientThread’s
+            //Before returning true, make sure you actually write the message to the ClientThreadâ€™s
             //      ObjectOutputStream using the writeObject method from the ObjectOutputStream class.
 
             boolean isConnected = true;
