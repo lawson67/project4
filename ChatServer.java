@@ -14,8 +14,8 @@ final class ChatServer {
     private final List<ClientThread> clients = new ArrayList<>();
     private final int port;
     //"\\\\C:\\Users\\Nezza\\workspace\\Projects\\bin\\the_file_name"
-    private ChatFilter c = new ChatFilter("badwords.txt");
-    //private ChatFilter c = new ChatFilter("\\\\C:\\Users\\Nezza\\workspace\\Projects\\bin\\the_file_name");
+    //private ChatFilter c = new ChatFilter("badwords.txt");
+    private ChatFilter c = new ChatFilter("\\\\C:\\Users\\Nezza\\workspace\\Projects\\bin\\the_file_name");
     
     private ChatServer(int port) {
         this.port = port;
@@ -218,11 +218,21 @@ final class ChatServer {
                         e.printStackTrace();
                     }*/
                 } else if (cm.getType() == 2){
-                	//System.out.println("2");
-                	String msge = cm.getMessage();
-                	msge = c.filter(msge);
-                	//System.out.println(cm.getRecipient());
-                	directMessage(currTime + " " + username + " -> " + cm.getRecipient() + ": " + msge + "\n", cm.getRecipient());
+                	if (!cm.getRecipient().equals("")){
+                		//System.out.println("2");
+                		String msge = cm.getMessage();
+                		msge = c.filter(msge);
+                		//System.out.println(cm.getRecipient());
+                		directMessage(currTime + " " + username + " -> " + cm.getRecipient() + ": " + msge + "\n", cm.getRecipient());
+                	} else {
+                        for (int i = 0; i < clients.size(); i++) {
+                        	//System.out.println(clients.get(i).username);
+                        	//System.out.println(username);
+                        	if (!username.equals(clients.get(i).username)){
+                        		System.out.println(clients.get(i).username);
+                        	}
+                        }
+                	}
                 }
             }
 
