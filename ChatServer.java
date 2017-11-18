@@ -14,8 +14,8 @@ final class ChatServer {
     private final List<ClientThread> clients = new ArrayList<>();
     private final int port;
     //"\\\\C:\\Users\\Nezza\\workspace\\Projects\\bin\\the_file_name"
-    //private chatFilter c = new ChatFilter("badwords.txt");
-    private ChatFilter c = new ChatFilter("\\\\C:\\Users\\Nezza\\workspace\\Projects\\bin\\the_file_name");
+    private ChatFilter c = new ChatFilter("badwords.txt");
+    //private ChatFilter c = new ChatFilter("\\\\C:\\Users\\Nezza\\workspace\\Projects\\bin\\the_file_name");
     
     private ChatServer(int port) {
         this.port = port;
@@ -30,17 +30,31 @@ final class ChatServer {
         //This will be done by iterating through the client list and writing the message using the
         //      writeMessage(String msg) method.
         //You will also need to print the message to the server’s terminal with a simple print statement.
+        
         String pattern = "HH:mm:ss";
         SimpleDateFormat timeFormat = new SimpleDateFormat(pattern);
         String currTime = timeFormat.format(new Date());
         ((ArrayList<ClientThread>)clients).trimToSize();
         for (int i = 0; i < clients.size(); i++) {
-                clients.get(i).writeMessage(currTime + " Server Broadcast: " + message + "\n");
+                clients.get(i).writeMessage(message);
         }
-        System.out.println(currTime + " Server Broadcast: " + message);
+        //System.out.println(currTime + " Server Broadcast: " + message);
 
 
-
+    }
+    
+    private void directMessage(String message, String username){
+        String pattern = "HH:mm:ss";
+        SimpleDateFormat timeFormat = new SimpleDateFormat(pattern);
+        String currTime = timeFormat.format(new Date());
+        ((ArrayList<ClientThread>)clients).trimToSize();
+        for (int i = 0; i < clients.size(); i++) {
+        	//System.out.println(clients.get(i).username);
+        	//System.out.println(username);
+        	if (clients.get(i).username.equals(username)){
+                clients.get(i).writeMessage(message);
+        	}
+        }
     }
 
     private void remove(int id){
@@ -190,17 +204,25 @@ final class ChatServer {
                     }
                     socketConnected = false;
                 }
-                else {
+                else if (cm.getType() == 0){
                     // Print message to server chat / console
                 	String msge = cm.getMessage();
                 	msge = c.filter(msge);
-                	System.out.println(currTime + " " + username + ": " + msge);
+                	//System.out.println(currTime + " " + username + ": " + msge);
                     // Send message back to the client
-                    try {
+                    
+                    broadcast(currTime + " " + username + ": " + msge + "\n");
+                    /*try {
                         sOutput.writeObject(currTime + " " + username + ": " + msge + "\n");
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
+                } else if (cm.getType() == 2){
+                	//System.out.println("2");
+                	String msge = cm.getMessage();
+                	msge = c.filter(msge);
+                	//System.out.println(cm.getRecipient());
+                	directMessage(currTime + " " + username + " -> " + cm.getRecipient() + ": " + msge + "\n", cm.getRecipient());
                 }
             }
 
@@ -213,16 +235,11 @@ final class ChatServer {
             //      ObjectOutputStream using the writeObject method from the ObjectOutputStream class.
 
             boolean isConnected = true;
-            try {
-                cm = (ChatMessage) sInput.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                isConnected = false;
-            }
             System.out.println(msg);
             try {
                 sOutput.writeObject(msg);
-            } catch (IOException e) {
+            } 
+            catch (IOException e) {
                 e.printStackTrace();
                 isConnected = false;
             }
