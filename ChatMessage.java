@@ -20,8 +20,10 @@ final class ChatMessage implements Serializable {
         this.type = type;
         // 0 = general message
         // 1 = logout message
+        // 2 = direct message
         // The logout  message will let the server know who logged out.
         this.message = message;
+        this.recipient = recipient;
     }
     /*
     public void directMessage (String message, String username){
