@@ -101,7 +101,9 @@ final class ChatClient {
             if (msg.equals("/logout")){
                 client.sendMessage(new ChatMessage(1,"",""));
                 runClient = false;
-            } else if (msg.length() > 4 && msg.substring(0,4).equals("/msg")){
+            } else if (msg.equals("/list")){
+            	client.sendMessage(new ChatMessage(2,"",""));
+        	} else if (msg.length() > 4 && msg.substring(0,4).equals("/msg")){
             	//breaks on space in username
             	String userName = msg.substring(5,msg.indexOf(" ", 5));
             	if (userName.equals(client.username)){
