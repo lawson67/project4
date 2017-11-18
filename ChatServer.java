@@ -194,13 +194,9 @@ final class ChatServer {
                     // Print message to server chat / console
                 	String msge = cm.getMessage();
                 	msge = c.filter(msge);
-                	System.out.println(currTime + " " + username + ": " + msge);
-                    // Send message back to the client
-                    try {
-                        sOutput.writeObject(currTime + " " + username + ": " + msge + "\n");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                	//System.out.println(currTime + " " + username + ": " + msge);
+                    broadcast(username + ": " + msge + "\n");
+					//sOutput.writeObject(currTime + " " + username + ": " + msge + "\n");
                 }
             }
 
