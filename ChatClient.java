@@ -65,7 +65,6 @@ final class ChatClient {
         }
     }
 
-
     /*
      * To start the Client use one of the following command
      * > java ChatClient
@@ -82,7 +81,8 @@ final class ChatClient {
         boolean runClient = true;
 
         // Create your client and start it
-        ChatClient client = new ChatClient("localhost", 1500, "CS 180 Student");
+        ChatClient client = new ChatClient("localhost", 1500, "CS_180_Student");
+
         if (args.length == 3){
             client = new ChatClient(args[2], Integer.parseInt(args[1]), args[0]);
         }
@@ -92,6 +92,8 @@ final class ChatClient {
         else if (args.length == 1 ){
             client = new ChatClient("localhost", 1500, args[0]);
         }
+
+        
         client.start();
         while(runClient) {
             Scanner scan = new Scanner(System.in);
@@ -99,6 +101,16 @@ final class ChatClient {
             if (msg.equals("/logout")){
                 client.sendMessage(new ChatMessage(1,"",""));
                 runClient = false;
+            } else if (msg.length() > 4 && msg.substring(0,4).equals("/msg")){
+            	//breaks on space in username
+            	String userName = msg.substring(5,msg.indexOf(" ", 5));
+            	if (userName.equals(client.username)){
+            		System.out.println("Error: cannot send message to self");
+            		//client.sendMessage(new ChatMessage(2,msg.substring(msg.indexOf(" ", 5)+1,msg.length()),userName));
+            	} else {
+                    //client.sendMessage(new ChatMessage(0,client.username,""));
+            		client.sendMessage(new ChatMessage(2,msg.substring(msg.indexOf(" ", 5)+1,msg.length()),userName));
+            	}
             }
             else{
                 // Send an empty message to the server
@@ -131,4 +143,5 @@ final class ChatClient {
             }
         }
     }
+    
 }
